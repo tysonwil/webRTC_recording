@@ -174,7 +174,7 @@ VoiceProcessingAudioUnit::State VoiceProcessingAudioUnit::GetState() const {
 }
 
 bool VoiceProcessingAudioUnit::Initialize(Float64 sample_rate) {
-  RTC_DCHECK_GE(state_, kUninitialized);
+  //RTC_DCHECK_GE(state_, kUninitialized);
   RTCLog(@"Initializing audio unit.");
 
   OSStatus result = noErr;

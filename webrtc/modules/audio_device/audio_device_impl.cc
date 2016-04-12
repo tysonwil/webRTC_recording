@@ -1445,7 +1445,8 @@ int32_t AudioDeviceModuleImpl::InitPlayout()
 {
     CHECK_INITIALIZED();
     _audioDeviceBuffer.InitPlayout();
-    return (_ptrAudioDevice->InitPlayout());
+    //return (_ptrAudioDevice->InitPlayout());  // TODO: hacky.. but now we're manually initialising
+    return 0;
 }
 
 // ----------------------------------------------------------------------------

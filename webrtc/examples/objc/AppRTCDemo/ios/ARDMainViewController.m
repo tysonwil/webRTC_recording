@@ -142,19 +142,25 @@
 #pragma mark - Private
 
 - (void)setupAudioSession {
-  RTCAudioSessionConfiguration *configuration =
-      [[RTCAudioSessionConfiguration alloc] init];
-  configuration.category = AVAudioSessionCategoryAmbient;
-  configuration.categoryOptions = AVAudioSessionCategoryOptionDuckOthers;
-  configuration.mode = AVAudioSessionModeDefault;
+//  RTCAudioSessionConfiguration *configuration =
+//      [[RTCAudioSessionConfiguration alloc] init];
+//  configuration.category = AVAudioSessionCategoryAmbient;
+//  configuration.categoryOptions = AVAudioSessionCategoryOptionDuckOthers;
+//  configuration.mode = AVAudioSessionModeDefault;
 
   RTCAudioSession *session = [RTCAudioSession sharedInstance];
   [session addDelegate:self];
   [session lockForConfiguration];
   NSError *error = nil;
-  if (![session setConfiguration:configuration active:YES error:&error]) {
-    RTCLogError(@"Error setting configuration: %@", error.localizedDescription);
-  }
+    
+    if (![session configureWebRTCSession:&error]) {
+        NSLog(@"Error configuring WebRTC");
+    }
+    
+    
+//  if (![session setConfiguration:configuration active:YES error:&error]) {
+//    RTCLogError(@"Error setting configuration: %@", error.localizedDescription);
+//  }
   [session unlockForConfiguration];
 }
 

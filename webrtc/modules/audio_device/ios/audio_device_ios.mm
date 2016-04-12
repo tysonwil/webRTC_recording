@@ -138,6 +138,15 @@ int32_t AudioDeviceIOS::Init() {
   // we will always tell the I/O audio unit to do a channel format conversion
   // to guarantee mono on the "input side" of the audio unit.
   UpdateAudioDeviceBuffer();
+    
+    
+    
+    //TODO: Very hacky: here we're setting up the audio buffers and unit for RTC right away
+    SetupAudioBuffersForActiveAudioSession();
+    CreateAudioUnit();
+    audio_unit_->Initialize(playout_parameters_.sample_rate());
+
+
   initialized_ = true;
   return 0;
 }
@@ -189,7 +198,7 @@ int32_t AudioDeviceIOS::InitRecording() {
 int32_t AudioDeviceIOS::StartPlayout() {
   LOGI() << "StartPlayout";
   RTC_DCHECK(thread_checker_.CalledOnValidThread());
-  RTC_DCHECK(play_is_initialized_);
+  //RTC_DCHECK(play_is_initialized_);
   RTC_DCHECK(!playing_);
   if (fine_audio_buffer_) {
     fine_audio_buffer_->ResetPlayout();
@@ -503,7 +512,10 @@ void AudioDeviceIOS::HandleConfiguredForWebRTC() {
   // Use configured audio session's settings to set up audio device buffer.
   // TODO(tkchin): Use RTCAudioSessionConfiguration to pick up settings and
   // pass it along.
-  SetupAudioBuffersForActiveAudioSession();
+    
+    
+    
+  //SetupAudioBuffersForActiveAudioSession(); //TODO: this is orignally uncommented (now doing this above)
 
   // Initialize the audio unit. This will affect any existing audio playback.
   if (!audio_unit_->Initialize(playout_parameters_.sample_rate())) {
@@ -605,8 +617,11 @@ void AudioDeviceIOS::SetupAudioBuffersForActiveAudioSession() {
 }
 
 bool AudioDeviceIOS::CreateAudioUnit() {
-  RTC_DCHECK(!audio_unit_);
+  //RTC_DCHECK(!audio_unit_);
 
+    if (audio_unit_) {
+        return true;  // If the audio unit is already initialized, just return
+    }
   audio_unit_.reset(new VoiceProcessingAudioUnit(this));
   if (!audio_unit_->Init()) {
     audio_unit_.reset();
@@ -677,10 +692,10 @@ bool AudioDeviceIOS::InitPlayOrRecord() {
   // If we are already configured properly, we can initialize the audio unit.
   if (session.isConfiguredForWebRTC) {
     [session unlockForConfiguration];
-    SetupAudioBuffersForActiveAudioSession();
+    //SetupAudioBuffersForActiveAudioSession();  TODO: orig uncommented
     // Audio session has been marked ready for WebRTC so we can initialize the
     // audio unit now.
-    audio_unit_->Initialize(playout_parameters_.sample_rate());
+    //audio_unit_->Initialize(playout_parameters_.sample_rate()); //TODO: orig uncommented
     return true;
   }
 

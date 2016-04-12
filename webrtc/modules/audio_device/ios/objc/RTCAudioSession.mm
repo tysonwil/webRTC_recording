@@ -115,7 +115,7 @@ NSInteger const kRTCAudioSessionErrorConfiguration = -2;
 - (void)setShouldDelayAudioConfiguration:(BOOL)shouldDelayAudioConfiguration {
   @synchronized(self) {
     // No one should be changing this while an audio device is active.
-    RTC_DCHECK(!self.isConfiguredForWebRTC);
+    //RTC_DCHECK(!self.isConfiguredForWebRTC);
     if (_shouldDelayAudioConfiguration == shouldDelayAudioConfiguration) {
       return;
     }
